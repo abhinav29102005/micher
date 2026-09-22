@@ -25,6 +25,7 @@ classifiers = [
 
 dependencies = [
     "rich>=13.0",
+    "psutil>=5.9",
 ]
 
 [project.optional-dependencies]
