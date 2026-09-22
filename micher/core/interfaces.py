@@ -78,7 +78,7 @@ def _list_interfaces_windows() -> list[Interface]:
             match = re.search(r"IPv4 Address[.\s]*:\s*([\d.]+)", line)
             if match and current_name:
                 ip = match.group(1)
-                if not ip.startswith("127."):
+                if not ip.startswith("127.") and not current_name.lower().startswith(("vethernet", "virtual", "npcap", "loopback", "vmware")):
                     interfaces.append(Interface(
                         name=current_name,
                         ip=ip,
@@ -103,7 +103,7 @@ def _list_interfaces_linux() -> list[Interface]:
             current_name = header.group(1).strip()
             continue
         addr = re.search(r"inet\s+([\d.]+)/\d+", line)
-        if addr and current_name and current_name != "lo":
+        if addr and current_name and current_name != "lo" and not current_name.startswith(("br-", "docker", "veth", "virbr", "vmnet", "tailscale", "wg", "tun", "tap")):
             interfaces.append(Interface(
                 name=current_name,
                 ip=addr.group(1),
