@@ -9,6 +9,7 @@ import customtkinter as ctk
 from . import theme
 from .monitor_view import MonitorDashboard
 from .tray import HAS_TRAY, TrayIcon
+from micher.core.proxy import BondingSocks5Proxy
 
 class MicherApp(ctk.CTk):
     def __init__(self) -> None:
@@ -35,6 +36,10 @@ class MicherApp(ctk.CTk):
         self.dashboard = MonitorDashboard(self)
         self.dashboard.pack(fill="both", expand=True)
         
+        # Start Proxy
+        self.proxy = BondingSocks5Proxy(port=1080)
+        self.proxy.start()
+        
         # Start tray in background
         self._tray.start()
 
@@ -47,6 +52,7 @@ class MicherApp(ctk.CTk):
         self.focus_force()
 
     def _quit_app(self) -> None:
+        self.proxy.stop()
         self.dashboard.destroy()
         self._tray.stop()
         self.destroy()

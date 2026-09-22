@@ -18,6 +18,7 @@ ITYPE_ICONS = {
     InterfaceType.UNKNOWN: "❓",
 }
 from micher.core.monitor import SystemNetworkMonitor, SystemSpeedSnapshot
+from micher.core.proxy import BondingSocks5Proxy
 
 console = Console()
 
@@ -60,6 +61,10 @@ def cmd_monitor() -> None:
     monitor = SystemNetworkMonitor(interval=0.5)
     monitor.start()
     
+    proxy = BondingSocks5Proxy(port=1080)
+    proxy.start()
+    console.print("[bold green]SOCKS5 Proxy started at 127.0.0.1:1080[/bold green]")
+    
     def generate_table(snap: SystemSpeedSnapshot) -> Table:
         table = Table(title="📊 Real-Time Network Monitor", border_style="cyan", show_lines=True, expand=True)
         table.add_column("Interface", style="bold")
@@ -94,6 +99,7 @@ def cmd_monitor() -> None:
     except KeyboardInterrupt:
         pass
     finally:
+        proxy.stop()
         monitor.stop()
         console.print("[dim]Monitor stopped.[/dim]")
 
