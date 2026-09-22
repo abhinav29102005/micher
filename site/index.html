@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Micher — Multi-Link Network Bonding</title>
+    <meta name="description" content="Combine Ethernet + WiFi + Hotspot for maximum transfer speed. Free, open-source, cross-platform network bonding.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0d1117;
+            --bg-card: #161b22;
+            --bg-hover: #1c2333;
+            --border: #30363d;
+            --cyan: #00d4ff;
+            --blue: #58a6ff;
+            --green: #3fb950;
+            --yellow: #d29922;
+            --red: #f85149;
+            --text: #e6edf3;
+            --text-dim: #8b949e;
+            --text-muted: #484f58;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ── Glow background ── */
+        .glow {
+            position: fixed;
+            top: -200px; left: 50%;
+            transform: translateX(-50%);
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Container ── */
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── Nav ── */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--cyan);
+            text-decoration: none;
+        }
+        .logo span { color: var(--text-dim); font-weight: 400; font-size: 0.9rem; margin-left: 8px; }
+        nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        nav a:hover { color: var(--cyan); }
+
+        /* ── Hero ── */
+        .hero {
+            text-align: center;
+            padding: 80px 0 40px;
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--cyan), var(--blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        .hero .badge {
+            display: inline-block;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 0.85rem;
+            color: var(--green);
+            margin-bottom: 24px;
+        }
+
+        /* ── Install cards ── */
+        .install-section {
+            padding: 40px 0;
+        }
+        .install-section h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .install-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .install-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .install-card:hover {
+            border-color: var(--cyan);
+            transform: translateY(-2px);
+        }
+        .install-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        .install-card .os {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            margin-bottom: 16px;
+        }
+        .code-block {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+            overflow-x: auto;
+            position: relative;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .code-block:hover {
+            border-color: var(--cyan);
+        }
+        .copy-btn {
+            position: absolute;
+            top: 8px; right: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 4px 10px;
+            color: var(--text-dim);
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            background: var(--cyan);
+            color: var(--bg);
+            border-color: var(--cyan);
+        }
+
+        /* ── Features ── */
+        .features {
+            padding: 60px 0;
+        }
+        .features h2 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 32px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: border-color 0.2s;
+        }
+        .feature-card:hover { border-color: var(--cyan); }
+        .feature-card .icon { font-size: 2rem; margin-bottom: 12px; }
+        .feature-card h3 { font-size: 1rem; margin-bottom: 8px; }
+        .feature-card p { font-size: 0.85rem; color: var(--text-dim); }
+
+        /* ── Docker ── */
+        .docker-section {
+            padding: 40px 0;
+            text-align: center;
+        }
+        .docker-section h2 { margin-bottom: 16px; font-size: 1.5rem; }
+        .docker-section p { color: var(--text-dim); margin-bottom: 20px; }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 32px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 680px) {
+            .hero h1 { font-size: 2.5rem; }
+            .install-cards { grid-template-columns: 1fr; }
+            .feature-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="glow"></div>
+
+    <div class="container">
+        <nav>
+            <a href="/" class="logo">⚡ Micher <span>v1.0</span></a>
+            <div>
+                <a href="https://github.com/abhinav29102005/micher" style="margin-left: 24px;">GitHub</a>
+            </div>
+        </nav>
+
+        <section class="hero">
+            <div class="badge">🟢 Free &amp; Open Source</div>
+            <h1>Bond Your Networks.<br>Multiply Your Speed.</h1>
+            <p>Combine Ethernet + WiFi + Hotspot into a single blazing-fast transfer. No VPN, no kernel changes, no root required.</p>
+        </section>
+
+        <section class="install-section">
+            <h2>⚡ One-Line Install</h2>
+            <div class="install-cards">
+                <div class="install-card">
+                    <h3>🐧 Linux</h3>
+                    <p class="os">Ubuntu, Fedora, Arch, etc.</p>
+                    <div class="code-block" onclick="copyCode(this)">
+                        curl -sSL https://micher.bigboyaks-account.workers.dev/install.sh | bash
+                        <span class="copy-btn">Copy</span>
+                    </div>
+                </div>
+                <div class="install-card">
+                    <h3>🪟 Windows</h3>
+                    <p class="os">PowerShell (Run as Admin recommended)</p>
+                    <div class="code-block" onclick="copyCode(this)">
+                        irm https://micher.bigboyaks-account.workers.dev/install.ps1 | iex
+                        <span class="copy-btn">Copy</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <h2>Why Micher?</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="icon">⚡</div>
+                    <h3>True Speed Bonding</h3>
+                    <p>Combine multiple interfaces for near-additive throughput. 100 Mbps WiFi + 50 Mbps Ethernet = ~150 Mbps.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h3>Real-Time Dashboard</h3>
+                    <p>Live speed gauges, per-link throughput graphs, and transfer progress — in both GUI and terminal.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🔌</div>
+                    <h3>Zero Config</h3>
+                    <p>Auto-discovers all network interfaces. No drivers, no kernel modules, no admin rights needed.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🐧</div>
+                    <h3>Cross-Platform</h3>
+                    <p>Works identically on Linux and Windows. GUI app with system tray, or powerful CLI for headless/SSH.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🐳</div>
+                    <h3>Docker Ready</h3>
+                    <p>Deploy the receiver as a Docker container on any VPS. One command to start accepting bonded transfers.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🆓</div>
+                    <h3>100% Free</h3>
+                    <p>No paid relay service, no subscription. Pure Python, stdlib sockets, open source forever.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="docker-section">
+            <h2>🐳 Server Mode (Docker)</h2>
+            <p>Run the receiver on any machine or VPS:</p>
+            <div class="code-block" style="max-width: 500px; margin: 0 auto; text-align: left;" onclick="copyCode(this)">
+                docker run -p 9191:9191 micher-server
+                <span class="copy-btn">Copy</span>
+            </div>
+        </section>
+
+        <footer>
+            <p>Micher — Mixture of Networks &nbsp;|&nbsp; MIT License &nbsp;|&nbsp; Made with ⚡</p>
+        </footer>
+    </div>
+
+    <script>
+        function copyCode(el) {
+            const text = el.textContent.replace('Copy', '').trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = el.querySelector('.copy-btn');
+                const orig = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'var(--green)';
+                btn.style.borderColor = 'var(--green)';
+                btn.style.color = 'var(--bg)';
+                setTimeout(() => {
+                    btn.textContent = orig;
+                    btn.style.background = '';
+                    btn.style.borderColor = '';
+                    btn.style.color = '';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

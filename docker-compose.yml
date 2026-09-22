@@ -1,0 +1,18 @@
+# ── Micher Server ─────────────────────────────────────────────────────── #
+# Start:  docker compose up -d
+# Logs:   docker compose logs -f
+# Stop:   docker compose down
+# ─────────────────────────────────────────────────────────────────────── #
+
+services:
+  micher-server:
+    build: .
+    container_name: micher-server
+    ports:
+      - "9191:9191"
+    volumes:
+      - ./received:/app/received
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+    command: ["receive", "--port", "9191", "--save-dir", "/app/received"]

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.1
+Type=Application
+Name=Micher
+GenericName=Network Bonding
+Comment=Combine multiple network interfaces for maximum transfer speed
+Exec=micher-gui
+Icon=micher
+Terminal=false
+Categories=Network;Utility;
+Keywords=network;bonding;transfer;speed;wifi;ethernet;
+StartupWMClass=micher
+StartupNotify=true
